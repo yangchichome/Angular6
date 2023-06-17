@@ -1,45 +1,56 @@
 import { Component } from '@angular/core';
-import { Student } from '../../shared/student.model';
 
 @Component({
-  // select: '[app-server]',
   selector: 'app-server',
-  templateUrl: './server.component.html', // you can put real html here
+  templateUrl: './server.component.html',
   styleUrls: ['./server.component.css']
 })
 export class ServerComponent {
-    serverId = 10;
-    serverStatus = 'online';
-    counter = 0;
-    isLogin = false;
-    userName: string = '';
-    students: Student[] = [new Student('Bill Gates', 'Computer Science'),
-                           new Student('Steve Jobs', 'Computer Science'),
-                           new Student('Elon Musk', 'Computer Science')];
+  foods: string[] = [];
+  food: string = '';
+  isCheck: boolean = false;
+  recipes: Map<string, string[]> = new Map();
 
-    getServerStatus() {
-      return this.serverStatus;
-    }
+  constructor() {
+    this.initializeRecipes();
+  }
 
-    counterPlus() {
-     this.counter ++;
-    }
+  initializeRecipes(){
+    this.recipes.set("SpaghettiCarbonara",['Spaghetti','bacon','eggyolks','Parmesancheese','blackpepper','salt']);
+    this.recipes.set("ThaiGreenCurry",['Greencurrypaste','coconutmilk','chickenorvegetables','limejuice','sugar','salt']);
+    this.recipes.set("ChocolateCake",['Flour','cocoapowder','sugar','eggs','milk','butter','chocolate','bakingpowder','salt']);
+    this.recipes.set("MexicanCornTortillaChips",['Corntortillas','oliveoil','salt']);
 
-    resetCounter() {
-      this.counter = 0;
-    }
+  }
 
-    login() {
-      this.isLogin = true;
+  foodPlus() {
+    this.isCheck = false;
+    if (this.food !== '') {
+      this.foods.push(this.food);
+      this.food = '';
     }
+  }
 
-    signOut() {
-      this.isLogin = false;
-    }
+  foodClear() {
+    this.foods = [];
+    this.isCheck = false;
+  }
 
-    // Event Binding
-    onUpdateUserName(event: Event) {
-      console.log(event);
-      this.userName = (<HTMLInputElement>event.target).value;
+  setMapValue(key: string, values: string[]) {
+    this.recipes.set(key, values);
+  }
+
+  getMapValue(key: string) {
+    return this.recipes.get(key);
+  }
+
+  foodCheck(): string | undefined {
+    this.isCheck = true;
+    for (const [key, values] of this.recipes) {
+      if (values.every(value => this.foods.includes(value))) {
+        return 'RECIPE MATCH : ' + key;
+      }
     }
+    return 'RECIPE NOT MATCH ';
+  }
 }
